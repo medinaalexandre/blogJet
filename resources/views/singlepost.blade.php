@@ -8,6 +8,7 @@
                     {{$post->title}}
                 </h1>
                 <span>Criado por <a href="/user/{{$post->user->id}}">{{$post->user->name}}</a> em {{ $post->created_at }}</span><br><br>
+                <img src="/storage/images/{{$post->image}}" class="img-fluid">
                 <p>{!! $post->post_body !!}</p>
 
                 <hr><br><br>

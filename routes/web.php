@@ -13,8 +13,6 @@
 
 Auth::routes();
 Route::get('/admin/', 'AdminController@index')->middleware('admin.check');
-Route::get('/admin/posts', 'AdminController@posts')->middleware('admin.check');
-
 Route::resource('posts', 'PostsController')->middleware('admin.check');
 Route::post('/comments/create', 'PostsController@storeComment');
 Route::resource('users', 'UsersController')->middleware('admin.check');
@@ -26,3 +24,5 @@ Route::get('/contact',function(){
    return view('contact');
 });
 Route::get('post/{slug}', 'PostsController@singlePost');
+Route::post('search', 'PostsController@search');
+Route::get('user/{user}', 'UsersController@singleUser');

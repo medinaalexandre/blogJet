@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <h1 class="text-center">Usuários</h1>
 
-                    <a href="users/create"><button class="btn btn-info">Adicionar novo Usuário</button></a>
+                    <a href="/users/create"><button class="btn btn-info">Adicionar novo Usuário</button></a>
 
                     <table class="table table-striped table-hover post-table">
                         <thead>

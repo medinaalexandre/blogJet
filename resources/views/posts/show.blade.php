@@ -7,6 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1>{{ $post->title }}</h1>
+            <img src="{{asset($post->image) }}" alt="">
         </div>
     </div>
     <div class="row">

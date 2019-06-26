@@ -7,7 +7,10 @@ use App\Comment;
 use App\Post;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class PostsController extends Controller
 {
@@ -45,13 +48,25 @@ class PostsController extends Controller
      */
     public function store(Post $post)
     {
-        Post::create($this->validateRequest());
-        $post->where('id' , $post->id)->update(['slug' => Str::slug($post->title,'-')]);
-
-
+        $post = Post::create($this->validateRequest());
+        if(is_null($post->slug)) {
+            $post->slug = Str::slug($post->title, '-');
+            $post->save();
+        }
+        $this->storeImage($post);
 
         return redirect('posts');
 
+    }
+
+    private function storeImage(Post $post)
+    {
+        if(request()->hasFile('image')){
+            $url = Storage::put('public/images', request()->image, 'public');
+            $post->image = $url;
+            $post->image = Str::substr($post->image, 14);
+            $post->save();
+        }
     }
 
     public function storeComment(Request $request)
@@ -145,5 +160,11 @@ class PostsController extends Controller
         $post = Post::where(['slug' => $slug])->firstOrFail();
 
         return view('singlepost', compact('post'));
+    }
+
+    public function search(){
+        $posts = Post::where('title', 'LIKE', '%'. request()->search. '%')->get();
+
+        return view('posts.search', compact('posts'));
     }
 }

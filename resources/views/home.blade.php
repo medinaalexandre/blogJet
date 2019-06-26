@@ -12,7 +12,7 @@
                         <img class="card-img-top" src=" {!! !empty($post->image) ? '/uploads/posts/' . $post->image :  'http://placehold.it/750x300' !!} " alt="Card image cap">
                         <div class="card-body">
                             <h2 class="card-title text-center">{{ $post->title }}</h2>
-                            <p class="card-text"> {{ str_limit($post->post_body, $limit = 280, $end = '...') }} </p>
+                            <p class="card-text"> {{ $post->post_description }} </p>
                             <a href="/post/{{ $post->slug }}" class="btn btn-primary">Read More &rarr;</a>
                         </div>
                         <div class="card-footer text-muted">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 @endforeach
-
+                {{ $posts->links() }}
             </div>
         </div>
     </div>

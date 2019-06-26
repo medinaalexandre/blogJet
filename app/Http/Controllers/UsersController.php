@@ -28,8 +28,8 @@ class UsersController extends Controller
     public function create()
     {
         $user = new User();
-
-        return view('users.create', compact('user'));
+        $roles = Role::all();
+        return view('users.create', compact('user','roles'));
     }
 
     /**
@@ -102,5 +102,9 @@ class UsersController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:4',
         ]);
+    }
+
+    public function singleUser(User $user){
+        return view('users.singleuser', compact('user'));
     }
 }

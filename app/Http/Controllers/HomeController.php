@@ -13,7 +13,6 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
     }
 
     /**
@@ -23,7 +22,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(5);
+        $posts = Post::paginate(2);
 
         return view('home', compact('posts'));
     }
