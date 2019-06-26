@@ -6,3 +6,9 @@ a button{
 .post-table{
     margin-top: 30px;
 }
+
+#likeButton{
+    color: #1f6fb2;
+    background:none;
+    border: none;
+}

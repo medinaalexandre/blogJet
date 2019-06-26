@@ -8,7 +8,7 @@
                 </div>
                 <ul>
                     @foreach($user->posts as $p)
-                        <a href="/posts/{{$p->id}}"><li> {{ $p->title }}</li></a>
+                        <a href="/post/{{$p->slug}}"><li> {{ $p->title }}</li></a>
                     @endforeach
                 </ul>
             </div>

@@ -22,7 +22,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(2);
+        $posts = Post::orderByDesc('created_at')->paginate(2);
 
         return view('home', compact('posts'));
     }

@@ -6,11 +6,12 @@ use App\Category;
 use App\Comment;
 use App\Post;
 use App\User;
+use App\Like;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+
 
 class PostsController extends Controller
 {
@@ -71,7 +72,7 @@ class PostsController extends Controller
 
     public function storeComment(Request $request)
     {
-        Comment::create($this->validateCommentRequest());
+        $comment = Comment::create($this->validateCommentRequest());
 
         return back();
     }
@@ -159,7 +160,14 @@ class PostsController extends Controller
     public function singlePost($slug){
         $post = Post::where(['slug' => $slug])->firstOrFail();
 
-        return view('singlepost', compact('post'));
+        if(is_null(Like::where(['post_id' => $post->id,
+                                'user_id' => Auth::user()->id])->first())){
+            $like = 0;
+        }else{
+            $like = 1;
+        }
+
+        return view('singlepost', compact('post', 'like'));
     }
 
     public function search(){

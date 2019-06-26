@@ -1,5 +1,7 @@
 @extends('layouts.base')
-
+@section('aditionalhead')
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E" crossorigin="anonymous">
+@endsection
 @section('content')
     <div class="container">
         <div class="row">
@@ -8,10 +10,24 @@
                     {{$post->title}}
                 </h1>
                 <span>Criado por <a href="/user/{{$post->user->id}}">{{$post->user->name}}</a> em {{ $post->created_at }}</span><br><br>
-                <img src="/storage/images/{{$post->image}}" class="img-fluid">
+                <img @if(is_null($post->image)) src="{{asset('img/default_img_post.png')}}" @else src="/storage/images/{{$post->image}}" @endif class="img-fluid">
+                <p>{{ $post->description }}</p>
+                <hr>
                 <p>{!! $post->post_body !!}</p>
 
                 <hr><br><br>
+
+                @guest
+                    <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $post->likes()->count() }}
+                @else
+                    <form action="/likePost" method="POST">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{$post->id}}">
+                        <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> @if($like == 1) <i class="fas fa-thumbs-up"></i>@else <i class="far fa-thumbs-up"></i>  @endif </button> {{ $post->likes()->count() }}
+                    </form>
+                @endguest
+
 
                 <h3>Comentários</h3>
                 @foreach($post->comments as $c)
@@ -26,30 +42,30 @@
                 @guest
                     <br>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        Você precisa estar <strong>logado</strong> para fazer comentários!
+                        Logue-se para <strong>comentar</strong> e dar <strong>like</strong> no post!
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <span></span>
                 @else
-                <div class="row">
-                    <div class="col-md-12">
-                        <form action="/comments/create" method="POST">
-                            @csrf
-                            <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="/comments/create" method="POST">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
 
-                            <div class="form-group">
-                                <label for="comment">Comentário</label>
-                                <textarea class="form-control" name='comment' placeholder="Escreva seu comentário aqui" rows="7">{{old("comment")}}</textarea>
-                            </div>
+                                <div class="form-group">
+                                    <label for="comment">Comentário</label>
+                                    <textarea class="form-control" name='comment' placeholder="Escreva seu comentário aqui" rows="7">{{old("comment")}}</textarea>
+                                </div>
 
-                            <input type="hidden" name="post_id" value="{{$post->id}}">
+                                <input type="hidden" name="post_id" value="{{$post->id}}">
 
-                            <button type="submit" class="btn btn-outline-primary">Comentar</button>
-                        </form>
+                                <button type="submit" class="btn btn-outline-primary">Comentar</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
                 @endguest
             </div>
 

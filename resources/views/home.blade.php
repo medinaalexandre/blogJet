@@ -9,10 +9,10 @@
 
                 @foreach ($posts as $post)
                     <div class="card mb-4">
-                        <img class="card-img-top" src=" {!! !empty($post->image) ? '/uploads/posts/' . $post->image :  'http://placehold.it/750x300' !!} " alt="Card image cap">
+                        <img class="card-img-top" @if(is_null($post->image)) src="{{asset('img/default_img_post.png')}}" @else src="/storage/images/{{$post->image}}" @endif  alt="Card image cap">
                         <div class="card-body">
                             <h2 class="card-title text-center">{{ $post->title }}</h2>
-                            <p class="card-text"> {{ $post->post_description }} </p>
+                            <p class="card-text"> {{ $post->description }} </p>
                             <a href="/post/{{ $post->slug }}" class="btn btn-primary">Read More &rarr;</a>
                         </div>
                         <div class="card-footer text-muted">
