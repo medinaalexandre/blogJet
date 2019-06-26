@@ -115,6 +115,12 @@ class PostsController extends Controller
     {
         $post->categories()->sync($request->request->get('categories'));
         $post->update($this->validateRequest($request));
+        if(request()->hasFile('image')){
+            $url = Storage::put('public/images', request()->image, 'public');
+            $post->image = $url;
+            $post->image = Str::substr($post->image, 14);
+            $post->save();
+        }
 
         return redirect('admin');
     }
