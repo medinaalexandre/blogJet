@@ -45,6 +45,9 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        @include('admin.floatingbutton')
     </div>
 @endsection
 </div>

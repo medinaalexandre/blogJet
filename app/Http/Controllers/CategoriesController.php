@@ -82,4 +82,11 @@ class CategoriesController extends Controller
     {
         //
     }
+
+    public function singleCategory($slug){
+        $category = Category::where(['name' => $slug])->firstOrFail();
+
+
+        return view('categories.singlecategory', compact('category'));
+    }
 }

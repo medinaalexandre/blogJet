@@ -17,6 +17,7 @@ Route::resource('posts', 'PostsController')->middleware('admin.check');
 Route::post('/comments/create', 'PostsController@storeComment');
 Route::resource('users', 'UsersController')->middleware('admin.check');
 Route::resource('categories', 'CategoriesController')->middleware('admin.check');
+Route::get('categories/{category}', 'CategoriesController@singleCategory');
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');

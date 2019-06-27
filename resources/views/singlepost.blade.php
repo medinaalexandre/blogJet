@@ -3,15 +3,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E" crossorigin="anonymous">
 @endsection
 @section('content')
-    <div class="container">
+    <div class="container single-post">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <h1>
                     {{$post->title}}
                 </h1>
                 <span>Criado por <a href="/user/{{$post->user->id}}">{{$post->user->name}}</a> em {{ $post->created_at }}</span><br><br>
                 <img @if(is_null($post->image)) src="{{asset('img/default_img_post.png')}}" @else src="/storage/images/{{$post->image}}" @endif class="img-fluid">
-                <p>{{ $post->description }}</p>
+                <p class="text-muted">{{ $post->description }}</p>
                 <hr>
                 <p>{!! $post->post_body !!}</p>
 
@@ -69,8 +69,13 @@
                 @endguest
             </div>
 
-            <div class="col-md-2">
-
+            <div class="col-md-4">
+                <h3 class="category-sidebar">Últimos posts</h3>
+                <ul>
+                    @foreach($ultimosposts as $p)
+                        <a href="/post/{{ $p->slug }}"><li>{{ $p->title }}</li></a>
+                    @endforeach
+                </ul>
             </div>
         </div>
     </div>

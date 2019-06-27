@@ -18,6 +18,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 </head>
 <body>
     <div id="app">
@@ -34,8 +37,24 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/">Home</a>
                         </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/categories/agricultura">Agricultura</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/categories/design">Design</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/categories/politica">Política</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/categories/saude">Saúde</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/categories/tecnologia">Tecnologia</a>
+                        </li>
+                    </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -69,6 +88,11 @@
                             </li>
                         @endguest
                     </ul>
+                    <form class="form-inline my-2 my-lg-0" action="search" method="POST">
+                        @csrf
+                        <input class="form-control mr-sm-2" type="search" name="search" placeholder="Pesquisar" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Pesquisar</button>
+                    </form>
                 </div>
             </div>
         </nav>

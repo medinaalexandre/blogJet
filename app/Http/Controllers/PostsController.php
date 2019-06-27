@@ -166,6 +166,8 @@ class PostsController extends Controller
     public function singlePost($slug){
         $post = Post::where(['slug' => $slug])->firstOrFail();
 
+        $ultimosposts = Post::all()->take(10);
+
         if(is_null(Like::where(['post_id' => $post->id,
                                 'user_id' => Auth::user()->id])->first())){
             $like = 0;
@@ -173,7 +175,7 @@ class PostsController extends Controller
             $like = 1;
         }
 
-        return view('singlepost', compact('post', 'like'));
+        return view('singlepost', compact('post', 'like', 'ultimosposts'));
     }
 
     public function search(){

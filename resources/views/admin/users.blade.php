@@ -36,11 +36,11 @@
                                         <span class="badge badge-info">{{$role->name}}</span>
                                     @endforeach
                                 </td>
-                                <td><a href="/users/{{$user->id}}/edit"><button class="btn btn-primary">Editar</button></a></td>
+                                <td><a href="/users/{{$user->id}}/edit"><button class="btn"><i class="fas fa-pencil-alt"></i></button></a></td>
                                 <td><form action="/users/{{ $user->id }}" method="POST">
                                     @method('DELETE')
                                     @csrf
-                                    <button type="submit" class="btn btn-danger">Excluir</button>
+                                    <button type="submit" class="btn"><i class="fas fa-trash"></i></button>
                                 </form></td>
                             </tr>
                         @endforeach
@@ -48,6 +48,8 @@
                     </table>
                 </div>
             </div>
-            </div>
+        </div>
+
+        @include('admin.floatingbutton')
     </div>
 @endsection

@@ -3,7 +3,6 @@
 @section('content')
     <div class="row">
         <div class="col-md-2">
-            <h3>Admin Dashboard</h3>
             <nav class="navbar navbar-light">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
@@ -43,12 +42,12 @@
                                         <a href="/categories/{{$category->id}}"><span class="badge badge-info">{{$category->name}}</span></a>
                                     @endforeach
                                 </td>
-                                <td><a href="/posts/{{ $post->id }}/edit"><button class="btn btn-primary">Editar</button></a></td>
+                                <td><a href="/posts/{{ $post->id }}/edit"><button class="btn"><i class="fas fa-pencil-alt"></i></button></a></td>
                                 <td>
                                     <form action="/posts/{{ $post->id }}" method="POST">
                                         @method('DELETE')
                                         @csrf
-                                        <button type="submit" class="btn btn-danger">Excluir</button>
+                                        <button type="submit" class="btn"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -58,5 +57,7 @@
                 </div>
             </div>
         </div>
+
+        @include('admin.floatingbutton')
     </div>
 @endsection
