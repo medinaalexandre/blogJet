@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Like;
+use App\LikeComment;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
@@ -18,6 +19,23 @@ class LikeController extends Controller
         }else{
             $like->delete();
         }
+        return back();
+    }
+
+    public function storeLikeComment(){
+
+        $likeComment = LikeComment::where(['user_id' => request()->user_id,
+                                            'comment_id' => request()->comment_id])->first();
+
+        if(is_null($likeComment)){
+            LikeComment::create(request()->validate([
+                'user_id' => 'required',
+                'comment_id' => 'required',
+            ]));
+        }else{
+            $likeComment->delete();
+        }
+
         return back();
     }
 }

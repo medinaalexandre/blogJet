@@ -28,3 +28,4 @@ Route::get('post/{slug}', 'PostsController@singlePost');
 Route::post('search', 'PostsController@search');
 Route::get('user/{user}', 'UsersController@singleUser');
 Route::post('likePost', 'LikeController@store');
+Route::post('likeComment', 'LikeController@storeLikeComment');

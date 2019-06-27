@@ -1,7 +1,5 @@
-@extends('layouts.base')
-@section('aditionalhead')
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E" crossorigin="anonymous">
-@endsection
+@extends('layouts.app')
+
 @section('content')
     <div class="container single-post">
         <div class="row">
@@ -16,6 +14,10 @@
                 <p>{!! $post->post_body !!}</p>
 
                 <hr><br><br>
+
+                <h4>Categorias: @foreach($post->categories as $category)
+                    <a href="/categories/{{$category->id}}"><span class="badge badge-info">{{$category->name}}</span></a>
+                                      @endforeach </h4>
 
                 @guest
                     <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $post->likes()->count() }}
@@ -36,6 +38,16 @@
                             <h5 class="card-title">Comentário de {{ $c->user->name }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">Postado em{{$c->created_at}}</h6>
                             <p class="card-text">{{$c->comment}}</p>
+                            @guest
+                               <button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
+                            @else
+                                <form action="/likeComment" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="comment_id" value="{{$c->id}}">
+                                    <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                                    <button type="submit" id="likeButton"> <i class="fas fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
+                                </form>
+                            @endguest
                         </div>
                     </div>
                 @endforeach
