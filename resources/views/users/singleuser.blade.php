@@ -3,7 +3,8 @@
 @section('content')
     <div class="container">
         <div class="col-md-12">
-            <h3 class="text-center py-5"><strong>{{ $user->name }}</strong></h3>
+            <h3 class="text-center py-3"><strong>{{ $user->name }}</strong></h3>
+            <h5 class="text-center"><strong>Publicações:</strong> {{ $user->posts->count() }}</h5>
             <ul>
 
                 @foreach($posts as $p)

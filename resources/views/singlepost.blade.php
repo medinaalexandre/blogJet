@@ -36,7 +36,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Comentário de {{ $c->user->name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Postado em{{$c->created_at}}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">Postado em {{$c->created_at}}</h6>
                             <p class="card-text">{{$c->comment}}</p>
                             @guest
                                <button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
@@ -83,11 +83,18 @@
 
             <div class="col-md-4">
                 <h3 class="category-sidebar">Últimos posts</h3>
-                <ul>
+                <div class="list-group">
                     @foreach($ultimosposts as $p)
-                        <a href="/post/{{ $p->slug }}"><li>{{ $p->title }}</li></a>
+                        <a href="/post/{{ $p->slug }}" class="list-group-item list-group-item-action flex-column align-items-start my-2">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ $p->title }}</h6>
+                            </div>
+                            <div class="d-flex flex-row justify-content-between">
+                                <small>{{ $p->created_at->diffForHumans() }}</small> <small><i class="far fa-thumbs-up"></i> {{ $p->likes()->count() }}</small>
+                            </div>
+                        </a>
                     @endforeach
-                </ul>
+                </div>
             </div>
         </div>
     </div>

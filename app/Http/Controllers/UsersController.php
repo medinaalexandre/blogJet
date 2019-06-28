@@ -106,7 +106,6 @@ class UsersController extends Controller
     }
 
     public function singleUser(User $user){
-
         $posts = Post::where('user_id', $user->id)->paginate(5);
 
         return view('users.singleuser', compact('user', 'posts'));
