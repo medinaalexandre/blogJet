@@ -29,3 +29,6 @@ Route::post('search', 'PostsController@search');
 Route::get('user/{user}', 'UsersController@singleUser');
 Route::post('likePost', 'LikeController@store');
 Route::post('likeComment', 'LikeController@storeLikeComment');
+
+Route::get('auth/{provider}', 'Auth\LoginController@redirectToProvider');
+Route::get('auth/{provider}/callback', 'Auth\LoginController@handleProviderCallback');

@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -66,6 +66,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Register') }}
                                 </button>
+                                <a href="{{ url('auth/google')}}" class="social"><i class="fab fa-google-plus-g"></i></a>
                             </div>
                         </div>
                     </form>
