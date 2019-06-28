@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Comment extends Model
 {
@@ -19,5 +20,13 @@ class Comment extends Model
 
     public function likes(){
         return $this->hasMany(LikeComment::class);
+    }
+
+    public function isAuthUserLikedComment(){
+        $like = $this->likes()->where('user_id', Auth::user()->id)->get();
+        if($like->isEmpty()){
+            return false;
+        }
+        return true;
     }
 }

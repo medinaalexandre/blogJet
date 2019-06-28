@@ -45,6 +45,7 @@ class LoginController extends Controller
     public function handleProviderCallback($provider)
     {
         $user = Socialite::driver($provider)->stateless()->user();
+
         $authUser = $this->FindOrCreateUser($user, $provider);
         Auth::login($authUser, true);
 
@@ -57,11 +58,17 @@ class LoginController extends Controller
         if($authUser){
             return $authUser;
         }
-        return User::create([
-           'name' => $user->name,
-           'email' => $user->email,
-           'provider' =>  strtoupper($provider),
-           'provider_id' => $user->id,
-        ]);
+
+        $newUser                    = new User;
+        $newUser->provider_name     = $provider;
+        $newUser->provider_id       = $user->getId();
+        $newUser->name              = $user->getName();
+        $newUser->email             = $user->getEmail();
+        $newUser->email_verified_at = now();
+        $newUser->avatar            = $user->getAvatar();
+        $newUser->roles()->attach(1);
+        $newUser->save();
+
+        return $newUser;
     }
 }

@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->hasMany(Like::class);
     }
 
+    public function likesComments()
+    {
+        return $this->hasMany(LikeComment::class);
+    }
+
     public function checkRoles($roles)
     {
         if ( ! is_array($roles)) {

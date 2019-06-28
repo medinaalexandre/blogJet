@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -35,5 +36,13 @@ class Post extends Model
 
     public function likes(){
         return $this->hasMany(Like::class);
+    }
+
+    public function isAuthUserLikedPost(){
+        $like = $this->likes()->where('user_id', Auth::user()->id)->get();
+        if($like->isEmpty()){
+            return false;
+        }
+        return true;
     }
 }

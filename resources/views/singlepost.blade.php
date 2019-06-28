@@ -26,7 +26,7 @@
                         @csrf
                         <input type="hidden" name="post_id" value="{{$post->id}}">
                         <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> @if($like == 1) <i class="fas fa-thumbs-up"></i>@else <i class="far fa-thumbs-up"></i>  @endif </button> {{ $post->likes()->count() }}
+                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> {!! $post->isAuthUserLikedPost() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} </button> {{ $post->likes()->count() }}
                     </form>
                 @endguest
 
@@ -45,7 +45,7 @@
                                     @csrf
                                     <input type="hidden" name="comment_id" value="{{$c->id}}">
                                     <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                                    <button type="submit" id="likeButton"> <i class="fas fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
+                                    <button type="submit" id="likeButton"> {!! $c->isAuthUserLikedComment() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} </button> {{ $c->likes()->count() }}
                                 </form>
                             @endguest
                         </div>

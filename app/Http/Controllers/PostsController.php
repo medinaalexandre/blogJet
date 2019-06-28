@@ -168,14 +168,8 @@ class PostsController extends Controller
 
         $ultimosposts = Post::all()->take(10);
 
-        if(is_null(Like::where(['post_id' => $post->id,
-                                'user_id' => Auth::user()->id])->first())){
-            $like = 0;
-        }else{
-            $like = 1;
-        }
 
-        return view('singlepost', compact('post', 'like', 'ultimosposts'));
+        return view('singlepost', compact('post', 'ultimosposts'));
     }
 
     public function search(){

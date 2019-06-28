@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
                 <div class="card-body">
-                    <p class="text-center"><a href="{{ url('auth/google')}}" class="social"><i class="fab fa-google-plus-g"></i></a></p>
+                    <p class="text-center"><a href="{{ url('auth/google')}}" class="social"><i class="fab fa-google-plus-g"></i></a>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
