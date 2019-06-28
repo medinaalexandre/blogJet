@@ -19,7 +19,7 @@ class LikeController extends Controller
         }else{
             $like->delete();
         }
-        return back();
+        return response()->json(['reponse'=>'success']);
     }
 
     public function storeLikeComment(){
@@ -36,6 +36,6 @@ class LikeController extends Controller
             $likeComment->delete();
         }
 
-        return back();
+        return response()->json(['reponse'=>'success']);
     }
 }

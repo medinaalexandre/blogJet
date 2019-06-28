@@ -22,11 +22,11 @@
                 @guest
                     <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $post->likes()->count() }}
                 @else
-                    <form action="/likePost" method="POST">
+                    <form action="/likePost" method="POST" id="likePost">
                         @csrf
                         <input type="hidden" name="post_id" value="{{$post->id}}">
                         <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> {!! $post->isAuthUserLikedPost() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} </button> {{ $post->likes()->count() }}
+                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> {!! $post->isAuthUserLikedPost() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} {{ $post->likes()->count() }}</button>
                     </form>
                 @endguest
 
@@ -39,13 +39,13 @@
                             <h6 class="card-subtitle mb-2 text-muted">Postado em {{$c->created_at}}</h6>
                             <p class="card-text">{{$c->comment}}</p>
                             @guest
-                               <button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
+                               <button type="submit" id="likeCommentButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
                             @else
-                                <form action="/likeComment" method="POST">
+                                <form action="/likeComment" method="POST" id="likeComment">
                                     @csrf
                                     <input type="hidden" name="comment_id" value="{{$c->id}}">
                                     <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                                    <button type="submit" id="likeButton"> {!! $c->isAuthUserLikedComment() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} </button> {{ $c->likes()->count() }}
+                                    <button type="submit" id="likeButton"> {!! $c->isAuthUserLikedComment() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!}{{ $c->likes()->count() }} </button>
                                 </form>
                             @endguest
                         </div>
@@ -63,7 +63,7 @@
                 @else
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="/comments/create" method="POST">
+                            <form  id="sendComment" action="{{ route('sendComment') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
 
@@ -74,7 +74,7 @@
 
                                 <input type="hidden" name="post_id" value="{{$post->id}}">
 
-                                <button type="submit" class="btn btn-outline-primary">Comentar</button>
+                                <button type="submit" class="btn btn-outline-primary" >Comentar</button>
                             </form>
                         </div>
                     </div>
@@ -98,4 +98,45 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        // like post
+        $(function(){
+            $('#likePost').submit(function(e){
+                var route = '/likePost';
+                var form_data = $(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: route,
+                    data: form_data.serialize(),
+                    success: function(){
+                        location.reload();
+                    },
+                });
+
+                e.preventDefault();
+            });
+        });
+
+        $(function(){
+            $('#likeComment').submit(function(e){
+                var route = '/likeComment';
+                var form_data = $(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: route,
+                    data: form_data.serialize(),
+                    success: function(){
+                        location.reload();
+                    },
+                });
+
+                e.preventDefault();
+            });
+        });
+
+    </script>
 @endsection

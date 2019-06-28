@@ -72,17 +72,11 @@ class PostsController extends Controller
 
     public function storeComment(Request $request)
     {
-        $comment = Comment::create($this->validateCommentRequest());
+        Comment::create($this->validateCommentRequest());
 
         return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
     public function show(Post $post)
     {
         $users = User::all();
@@ -90,12 +84,7 @@ class PostsController extends Controller
         return view('posts.show', compact('post', 'users', 'comments'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Post $post)
     {
         $users = User::all();
@@ -159,7 +148,7 @@ class PostsController extends Controller
         return request()->validate([
            'user_id' => 'required',
            'post_id' => 'required',
-           'comment' => 'required|min:5',
+           'comment' => 'required|min:5|max:1024',
         ]);
     }
 

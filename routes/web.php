@@ -18,15 +18,19 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/admin/', 'AdminController@index')->middleware('admin.check');
 Route::resource('posts', 'PostsController')->middleware('admin.check');
-Route::post('/comments/create', 'PostsController@storeComment');
+
+// links q tme q ser ajax
+Route::post('/comments/create', 'PostsController@storeComment')->name('sendComment');
+Route::post('likePost', 'LikeController@store');
+Route::post('likeComment', 'LikeController@storeLikeComment');
+
+
 Route::resource('users', 'UsersController')->middleware('admin.check');
 Route::resource('categories', 'CategoriesController')->middleware('admin.check');
 Route::get('categories/{category}', 'CategoriesController@singleCategory');
 Route::get('post/{slug}', 'PostsController@singlePost');
 Route::post('search', 'PostsController@search');
 Route::get('user/{user}', 'UsersController@singleUser');
-Route::post('likePost', 'LikeController@store');
-Route::post('likeComment', 'LikeController@storeLikeComment');
 
 // login c google
 Route::get('auth/{provider}', 'Auth\LoginController@redirectToProvider');
