@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -105,6 +106,9 @@ class UsersController extends Controller
     }
 
     public function singleUser(User $user){
-        return view('users.singleuser', compact('user'));
+
+        $posts = Post::where('user_id', $user->id)->paginate(5);
+
+        return view('users.singleuser', compact('user', 'posts'));
     }
 }

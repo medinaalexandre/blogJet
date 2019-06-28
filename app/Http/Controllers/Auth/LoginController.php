@@ -66,7 +66,6 @@ class LoginController extends Controller
         $newUser->email             = $user->getEmail();
         $newUser->email_verified_at = now();
         $newUser->avatar            = $user->getAvatar();
-        $newUser->roles()->attach(1);
         $newUser->save();
 
         return $newUser;

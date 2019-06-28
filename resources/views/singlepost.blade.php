@@ -16,7 +16,7 @@
                 <hr><br><br>
 
                 <h4>Categorias: @foreach($post->categories as $category)
-                    <a href="/categories/{{$category->id}}"><span class="badge badge-info">{{$category->name}}</span></a>
+                    <a href="/categories/{{$category->name}}"><span class="badge badge-info">{{$category->name}}</span></a>
                                       @endforeach </h4>
 
                 @guest
@@ -54,7 +54,7 @@
                 @guest
                     <br>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        Logue-se para <strong>comentar</strong> e dar <strong>like</strong> no post!
+                        <a href="/login">Logue-se</a> para <strong>comentar</strong> e dar <strong>like</strong> no post!
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
