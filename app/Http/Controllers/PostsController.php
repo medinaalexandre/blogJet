@@ -47,14 +47,16 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Post $post)
+    public function store(Post $post, Request $request)
     {
+        $request->validate(['title' => 'unique:posts'],['title.unique' => 'Já existe um post com esse título']);
         $post = Post::create($this->validateRequest());
         if(is_null($post->slug)) {
             $post->slug = Str::slug($post->title, '-');
             $post->save();
         }
         $this->storeImage($post);
+        $post->categories()->sync(request()->request->get('categories'));
 
         return redirect('posts');
 
