@@ -37,6 +37,8 @@ Agora para gerar a chave de aplicação, rode o seguinte comando
 `php artisan key:generate`
 ## Configurando o banco de dados do blog
 
+Antes de seguir o tutorial, se você não tem conhecimento do laravel, recomendo olhar pelo menos os oito primeiros videos desse [tutorial.](https://www.youtube.com/watch?v=qiMYkrkXJ6k&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=1) Vai ser uma hora bem gasta entendendo os conceitos básicos do que vamos utilizar para criar o blog.
+
 Neste tutorial iremos usar o [MySQL](https://www.mysql.com/) como SGBD, para dizer ao laravel qual é o nosso banco de dados, acesse o arquivo .env e procure pelas seguintes linhas
 ```
 DB_CONNECTION=mysql       <- Defina a conexao como "mysql"
@@ -295,4 +297,11 @@ E no modelo **User.php**
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 ```
+
+Ainda falta criar os likes e a tabela de autenticação com o Google, mas vamos deixar isso para depois.
+
+Agora vamos começar a modificar os controllers
+
+## Controllers no laravel
+Os controllers ficam em **blog/app/Http/Controllers**, já temos alguns criados se você seguiu o tutorial.
 
