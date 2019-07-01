@@ -40,11 +40,11 @@ Agora para gerar a chave de aplicação, rode o seguinte comando
 Neste tutorial iremos usar o [MySQL](https://www.mysql.com/) como SGBD, para dizer ao laravel qual é o nosso banco de dados, acesse o arquivo .env e procure pelas seguintes linhas
 ```
 DB_CONNECTION=mysql       <- Defina a conexao como "mysql"
-DB_HOST=127.0.0.1  		  <- Coloque o IP do seu banco de dados
-DB_PORT=3306  			  <- A porta que o BD está utilizando
+DB_HOST=127.0.0.1         <- Coloque o IP do seu banco de dados
+DB_PORT=3306  	          <- A porta que o BD está utilizando
 DB_DATABASE=homestead     <- O nome do seu banco de dados
 DB_USERNAME=homestead     <- O usuário com acesso ao BD
-DB_PASSWORD=secret		  <- A senha do usuário
+DB_PASSWORD=secret        <- A senha do usuário
 ```
 
 ## Usuários
@@ -118,6 +118,51 @@ E o seguinte trecho de código no modelo User, localizado em **blog/app/User.php
     public function posts(){
         return $this->hasMany(Post::class);
     }
+```
+
+Agora vamos criar o migration dos comentários, rode o comando
+```php
+php artisan make:model Comment -m
+```
+Adicione os atributos do comentário no migration **create_comments_table**
+```php
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateCommentsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('comments', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->timestamps();
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete("cascade");
+            $table->text("comment");
+        });
+    }
+    
+    public function down()
+    {
+        Schema::dropIfExists('comments');
+    }
+}
+```
+
+Criando a migration para categorias
+
+```php
+php artisan make:model Category -m
+```
+
+Adicione o seguinte trecho de código a função **create** da migration **create_categories_table** 
+```php
+    $table->string('name');
 ```
 
 ## Delete a file
