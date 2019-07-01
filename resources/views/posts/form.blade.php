@@ -32,7 +32,7 @@
 
 <div class="form-group d-flex flex-column">
     <label for="image">Imagem:</label>
-    <img  class="img-fluid" @if(is_null($post->image)) src="{{asset('img/default_img_post.png')}}" @else src="/storage/images/{{$post->image}}" @endif></img>
+    <img  class="img-fluid" @if(!is_null($post->image)) src="/storage/images/{{$post->image}}" @endif></img>
     <input type="file" name="image" class="py-2">
     <div>{{ $errors->first('image') }}</div>
 </div>
