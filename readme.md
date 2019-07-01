@@ -119,6 +119,7 @@ E o seguinte trecho de código no modelo User, localizado em **blog/app/User.php
         return $this->hasMany(Post::class);
     }
 ```
+Para entender melhor o que significa "belongsTo, hasMany, belongsToMany", leia sobre [Eloquent Relationships](https://laravel.com/docs/5.8/eloquent-relationships)
 
 Agora vamos criar o migration dos comentários, rode o comando
 ```php
@@ -153,21 +154,37 @@ class CreateCommentsTable extends Migration
     }
 }
 ```
-
 Criando a migration para categorias
-
 ```php
 php artisan make:model Category -m
 ```
-
 Adicione o seguinte trecho de código a função **create** da migration **create_categories_table** 
 ```php
     $table->string('name');
 ```
 
-## Delete a file
+### Relações N para N no laravel
+Para criar uma relação N para N, é necessário uma nova tabela para guardar os relacionamentos entre Post e Categorias, pois um post pode conter várias categorias, e uma categoria pode ter vários posts.
+Rode o comando
+```php
+php artisan make:migration create_category_post 
+```
+Atualize a função up da migration **create_category_post** para
+```php
+public function up()
+    {
+        Schema::create('category_post', function(Blueprint $table){
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('post_id')->index();
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete("cascade");
+            $table->unsignedBigInteger('category_id')->index();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete("cascade");
+            $table->timestamps();
+        });
+    }
+```
 
-You can delete the current file by clicking the **Remove** button in the file explorer. The file will be moved into the **Trash** folder and automatically deleted after 7 days of inactivity.
+
 
 ## Export a file
 
