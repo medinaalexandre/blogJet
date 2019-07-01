@@ -203,6 +203,18 @@ public function up()
         });
     }
 ```
+Modifique o modelo **Post.php** e adicione o seguinte trecho de código
+```php
+    public function categories(){
+        return $this->belongsToMany( Category::class);
+    }
+``` 
+E no modelo **Category.php** adicione
+```php
+    public function posts(){
+        return $this->belongsToMany(Post::class);
+    }
+```
 
 Vamos rodar um migrate para ver se tudo está dando certo até aqui
 ```php
@@ -236,15 +248,51 @@ Aqui está a solução no [stackoverflow](https://pt.stackoverflow.com/questions
 
 Agora vamos continuar criando nosso banco
 
-Modifique o modelo **Post.php** e adicione o seguinte trecho de código
+Crie um modelo Role, para definir que tipo de usuário vai ser.
 ```php
-    public function categories(){
-        return $this->belongsToMany( Category::class);
-    }
-``` 
-E no modelo **Category.php** adicione
+php artisan make:model Role -m
+```
+
+Modifique a migration **create_roles_table**
 ```php
-    public function posts(){
-        return $this->belongsToMany(Post::class);
+    public function up()
+    {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('description');
+            $table->timestamps();
+        });
     }
 ```
+
+Crie uma nova migration para armazenar as relações de users com roles
+```php
+php artisan make:migration create_role_user_table
+```
+Modifique a migration para
+```php
+    public function up()
+    {
+        Schema::create('role_user', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('role_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+        });
+    }
+```
+Modifique o modelo **Role.php** e adicione a função
+```php
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+```
+E no modelo **User.php**
+```php
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+```
+
