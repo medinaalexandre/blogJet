@@ -103,7 +103,22 @@ class CreatePostsTable extends Migration
     }
 }
 ```
+Se você analisou o código, viu que foi criado uma relação entre Posts e Usuários pela chave estrangeira "user_id". Vamos definir isso nos nossos modelos "Post" e "Usuário"
 
+Adicione o seguinte trecho de código no modelo Post, ele está localizado em **blog/app/Post.php**
+
+```php
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+```
+
+E o seguinte trecho de código no modelo User, localizado em **blog/app/User.php**
+```php 
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
+```
 
 ## Delete a file
 
