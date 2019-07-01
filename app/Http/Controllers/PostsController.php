@@ -137,8 +137,9 @@ class PostsController extends Controller
             'image' => 'sometimes|file|image|max:5000',
         ],[
             'title.required' => "O título é obrigatório!",
-            'title.required' => "O título precisa ter mais que 5 caracteres!",
+            'title.min' => "O título precisa ter mais que 5 caracteres!",
             'description.required' => "A descrição é obrigatória!",
+            'post_body.required' => 'O post não pode ser vazio',
         ]);
 
         return $validatedData;
@@ -148,8 +149,13 @@ class PostsController extends Controller
         return request()->validate([
            'user_id' => 'required',
            'post_id' => 'required',
-           'comment' => 'required|min:5|max:1024',
-        ]);
+           'comment' => 'required|min:3|max:1024',
+            ],
+            [
+                'comment.required' => 'O comentário não pode ser vazio!',
+                'comment.min' => 'O comentário não pode ter menos que 3 caracteres!',
+                'comment.max' => 'O comentário não pode ter mais que 1024 caracteres!',
+            ]);
     }
 
     public function singlePost($slug){

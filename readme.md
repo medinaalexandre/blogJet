@@ -302,6 +302,11 @@ Ainda falta criar os likes e a tabela de autenticação com o Google, mas vamos 
 
 Agora vamos começar a modificar os controllers
 
+
+
+## Views no laravel
+Vamos modificar a página inicial do blog. As views no laravel ficam em **blog/resources/views/**
+
 ## Controllers no laravel
 Os controllers ficam em **blog/app/Http/Controllers**, já temos alguns criados se você seguiu o tutorial.
 

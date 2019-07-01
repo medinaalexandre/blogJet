@@ -1,12 +1,12 @@
 <div class="form-group">
     <label for="title" >Título</label>
-    <input type="text" name="title" value="{{ old('title') ?? $post->title }}" class="form-control">
+    <input type="text" name="title" value="{{ old('title') ?? $post->title }}" class="form-control  {{ $errors->has('title') ? 'is-invalid' : '' }}">
     <div>{{ $errors->first('title') }}</div>
 </div>
 
 <div class="form-group">
     <label for="description">Descrição:</label>
-    <input type="text" name="description" value="{{ old('description') ?? $post->description }}" class="form-control">
+    <input type="text" name="description" value="{{ old('description') ?? $post->description }}" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">
     <div><span class="required-red">{{ $errors->first('description') }}</span></div>
 </div>
 
@@ -26,7 +26,7 @@
 </div>
 <div class="panel-group">
     <label for="post_body">Post:</label>
-    <textarea id="summernote" name="post_body" class="form-control">{{ old('post_body') ?? $post->post_body }}</textarea>
+    <textarea id="summernote" name="post_body" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}">{{ old('post_body') ?? $post->post_body }}</textarea>
     <div>{{ $errors->first('post_body') }}</div>
 </div>
 

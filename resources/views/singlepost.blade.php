@@ -69,7 +69,8 @@
 
                                 <div class="form-group">
                                     <label for="comment">Comentário</label>
-                                    <textarea class="form-control" name='comment' placeholder="Escreva seu comentário aqui" rows="7">{{old("comment")}}</textarea>
+                                    <textarea class="form-control {{ $errors->has('comment') ? 'is-invalid' : '' }}" name='comment' placeholder="Escreva seu comentário aqui" rows="7">{{old("comment")}}</textarea>
+                                    <div><span class="required-red">{{ $errors->first('comment') }}</span></div>
                                 </div>
 
                                 <input type="hidden" name="post_id" value="{{$post->id}}">
