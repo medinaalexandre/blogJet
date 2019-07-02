@@ -359,6 +359,10 @@ Nessa view, vamos ter um formulário que ira receber os dados do post, precisamo
         $request->validate(['title' => 'unique:posts'],['title.unique' => 'Já existe um post com esse título']);
         $post = Post::create($this->validateRequest());
         $post->categories()->sync(request()->request->get('categories'));
+        if(is_null($post->slug)) {
+            $post->slug = Str::slug($post->title, '-');
+            $post->save();
+        }
 
         return redirect('admin.post.list');
     }
@@ -433,7 +437,7 @@ E agora acesse localhost/novarota e veja o que aparece.
 Para retornar uma view já existente, em vez de retornar uma String, vamos retornar uma view. Veja o exemplo
 ```php
 Route::get('/admin', function (){
-    return view('admin.index');
+    return view('admin.index');w
 });
 ```
 Quando retornar uma view, o laravel procura ela dentro da pasta **resources/views**, se a nossa view estiver dentro de uma pasta, dizemos primeiro o nome da pasta (admin) ponto o nome do arquivo, no caso do exemplo ele ira renderizar o arquivo **home.blade.php** que está em **resources/views/admin/home.blade.php**
@@ -443,3 +447,44 @@ Porém como estamos retornando nossas views no controller, a forma que iremos fa
 Route::get(('/admin', 'AdminController@index');
 ```
 Nesse caso, quando o usuário acessar http://localhost/admin, o laravel ira acessar o controller **AdminController** e usar a função **index**.
+
+## Como fazer o upload de imagens no Laravel
+Para fazer o upload de imagens, vamo usar o Sistema de armazenamento de arquivos do Laravel, a documentação dele você pode ver [aqui](https://laravel.com/docs/5.8/filesystem).
+
+Primeiro, precisamos criar um link de onde irão ficar as imagens com o disco publico do site, para isso rode o comando
+```php
+php artisan storage:link
+```
+
+Agora para armazenar a imagem, vamos criar uma função no nosso PostsController
+```php
+    private function storeImage(Post $post)
+    {
+        if(request()->hasFile('image')){
+            $url = Storage::put('public/images', request()->image, 'public');
+            $post->image = $url;
+            $post->image = Str::substr($post->image, 14);
+            $post->save();
+        }
+    }
+```
+Para armazenar a imagem, usaremos o metodo Storage::put(), passando como primeiro parametro o local que vai ficar armazenado, a imagem que vai ser armazenada, e o a visibilidade dela como 'public'
+Depois vamos manipular a string obtida do upload para salvar apenas o nome da imagem, sem o **public/images/**, pois nos interessa salvar no banco somente o nome que o laravel gerou para a imagem, com esse nome podemos chamar a imagem depois na view utilizando **src="/storage/images/{{$post->image}}"**
+
+Vamos adicionar essa função nova **storeImage()** a nossa função de Criar um post, a função **create** do controle agora ficará assim
+```php
+    public function store(Post $post, Request $request)
+    {
+        $request->validate(['title' => 'unique:posts'],['title.unique' => 'Já existe um post com esse título']);
+        $post = Post::create($this->validateRequest());
+        if(is_null($post->slug)) {
+            $post->slug = Str::slug($post->title, '-');
+            $post->save();
+        }
+        $this->storeImage($post);
+        $post->categories()->sync(request()->request->get('categories'));
+
+        return redirect('posts');
+
+    }
+```
