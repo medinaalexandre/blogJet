@@ -751,7 +751,7 @@ E agora acesse localhost/novarota e veja o que aparece.
 Para retornar uma view já existente, em vez de retornar uma String, vamos retornar uma view. Veja o exemplo
 ```php
 Route::get('/admin', function (){
-    return view('admin.index');w
+    return view('admin.index');
 });
 ```
 Quando retornar uma view, o laravel procura ela dentro da pasta **resources/views**, se a nossa view estiver dentro de uma pasta, dizemos primeiro o nome da pasta (admin) ponto o nome do arquivo, no caso do exemplo ele ira renderizar o arquivo **home.blade.php** que está em **resources/views/admin/home.blade.php**
