@@ -211,7 +211,6 @@ public function up()
             $table->foreign('post_id')->references('id')->on('posts')->onDelete("cascade");
             $table->unsignedBigInteger('category_id')->index();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete("cascade");
-            $table->timestamps();
         });
     }
 ```
@@ -312,7 +311,10 @@ E no modelo **User.php**
 
 Ainda falta criar os likes e a tabela de autenticação com o Google, mas vamos deixar isso para depois.
 
-Agora vamos começar a modificar os controllers
+Agora vamos atualizar o nosso banco
+```php
+php artisan migrate:fresh
+```
 
 
 
