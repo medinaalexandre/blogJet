@@ -172,6 +172,8 @@ Modifique o modelo **Post.php** e adicione o seguinte trecho de código
 ```
 No modelo **Comment.php** adicione
 ```php
+    protected $table = 'comments';        
+
     public function post(){
         return $this->belongsTo(Post::class);
     }
@@ -221,6 +223,8 @@ Modifique o modelo **Post.php** e adicione o seguinte trecho de código
 ``` 
 E no modelo **Category.php** adicione
 ```php
+    protected $table = 'categories';
+     
     public function posts(){
         return $this->belongsToMany(Post::class);
     }
