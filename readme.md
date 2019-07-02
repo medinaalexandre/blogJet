@@ -329,6 +329,54 @@ Vamos criar um novo controller para os Posts
 ```php
 php artisan make:controller PostsController -m Post
 ```
+Vamos modificar a função create para retornar a view que cria um post
+```php
+        public function create()
+        {
+            $users = User::all();
+            $post = new Post();
+            $categories = Category::all();
+    
+            return view('posts.create',compact('users', 'post', 'categories'));
+        }
+```
+Não esqueça de importar o Model de Category e User no controller
+
+Nessa view, vamos ter um formulário que ira receber os dados do post, precisamos de uma função para receber, tratar e armazenar no banco os dados do post, essa função se chama **store**
+```php
+    public function store(Post $post, Request $request)
+    {
+        $request->validate(['title' => 'unique:posts'],['title.unique' => 'Já existe um post com esse título']);
+        $post = Post::create($this->validateRequest());
+        $post->categories()->sync(request()->request->get('categories'));
+
+        return redirect('posts');
+    }
+```
+Na primeira linha, validamos se o título é único, caso contrário o usuário receberá a mensagem _'Já existe um post com esse título'_. Caso o título não exista no banco de dados, vamos tentar criar o Post usando a função **Post::create()**
+Como parametro, vamos passar os dados que recebemos da request do usuário **$this** e fazer uma validação, para o código ficar mais limpos, vamos criar uma função para isto
+
+```php
+    public function validateRequest(){
+        $validatedData = request()->validate([
+            'title' => 'required|min:5',
+            'description' => 'required',
+            'user_id' => 'required',
+            'slug' => 'sometimes',
+            'post_body' => 'required',
+            'image' => 'sometimes|file|image|max:5000',
+        ],[
+            'title.required' => "O título é obrigatório!",
+            'title.min' => "O título precisa ter mais que 5 caracteres!",
+            'description.required' => "A descrição é obrigatória!",
+            'post_body.required' => 'O post não pode ser vazio',
+        ]);
+
+        return $validatedData;
+    }
+```
+Com essa função, além de definirmos todas as regras necessárias para publicar um post, garantimos que somente esses dados irão ser cadastrados no banco, caso o usuário edite o HTML e adicione um novo input com um novo campo, este dado será ignorado pela função.
+Feito isto, o terceiro comando da nossa função **store** pega as categorias selecionadas pelo usuário na hora de criar o post e usa o método **sync** para atualizar as relações de post com categoria no banco de dados.
 
 ## Acessando as views
 Para ver suas views, você precisa dizer ao laravel como chegar nelas, isto é feito no arquivo **web.php** localizado em **blog/routes/web.php**
