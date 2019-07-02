@@ -104,8 +104,8 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $post->categories()->sync($request->request->get('categories'));
         $post->update($this->validateRequest($request));
+        $post->categories()->sync($request->request->get('categories'));
         if(request()->hasFile('image')){
             $url = Storage::put('public/images', request()->image, 'public');
             $post->image = $url;

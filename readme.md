@@ -378,6 +378,27 @@ Como parametro, vamos passar os dados que recebemos da request do usuário **$th
 Com essa função, além de definirmos todas as regras necessárias para publicar um post, garantimos que somente esses dados irão ser cadastrados no banco, caso o usuário edite o HTML e adicione um novo input com um novo campo, este dado será ignorado pela função.
 Feito isto, o terceiro comando da nossa função **store** pega as categorias selecionadas pelo usuário na hora de criar o post e usa o método **sync** para atualizar as relações de post com categoria no banco de dados.
 
+Agora vamos criar a função para editar o Post
+```php
+    public function update(Request $request, Post $post)
+    {
+        $post->update($this->validateRequest($request));
+        $post->categories()->sync($request->request->get('categories'));
+        
+        return redirect('admin');
+    }
+```
+
+Para deletar o post é simples, basta receber ele por parametro e usar o método **delete()**
+```php
+    public function destroy(Post $post)
+    {
+        $post->delete();
+
+        return redirect('posts');
+    }
+```
+
 ## Acessando as views
 Para ver suas views, você precisa dizer ao laravel como chegar nelas, isto é feito no arquivo **web.php** localizado em **blog/routes/web.php**
 
