@@ -329,7 +329,7 @@ Vamos criar um novo controller para os Posts
 ```php
 php artisan make:controller PostsController -m Post
 ```
-Vamos modificar a função create para retornar a view que cria um post
+Modifique a função create para retornar a view que cria um post
 ```php
         public function create()
         {
@@ -340,7 +340,7 @@ Vamos modificar a função create para retornar a view que cria um post
             return view('posts.create',compact('users', 'post', 'categories'));
         }
 ```
-Não esqueça de importar o Model de Category e User no controller
+Não esqueça de importar o Model de Category e User no controller, é necessário passar todos os usuários e todas as categorias para que o usuário possa escolher quem é o Autor do Post e quais Categorias o post pertence. O post vazio é um truque que usamos para poder reaproveitar o formulário de criar o post na hora de editar.
 
 Nessa view, vamos ter um formulário que ira receber os dados do post, precisamos de uma função para receber, tratar e armazenar no banco os dados do post, essa função se chama **store**
 ```php
@@ -392,7 +392,7 @@ E agora acesse localhost/novarota e veja o que aparece.
 Para retornar uma view já existente, em vez de retornar uma String, vamos retornar uma view. Veja o exemplo
 ```php
 Route::get('/admin', function (){
-    return view('admin.home');
+    return view('admin.index');
 });
 ```
 Quando retornar uma view, o laravel procura ela dentro da pasta **resources/views**, se a nossa view estiver dentro de uma pasta, dizemos primeiro o nome da pasta (admin) ponto o nome do arquivo, no caso do exemplo ele ira renderizar o arquivo **home.blade.php** que está em **resources/views/admin/home.blade.php**
