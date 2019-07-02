@@ -337,7 +337,7 @@ Modifique a função create para retornar a view que cria um post
             $post = new Post();
             $categories = Category::all();
     
-            return view('posts.create',compact('users', 'post', 'categories'));
+            return view('admin.posts.create',compact('users', 'post', 'categories'));
         }
 ```
 Não esqueça de importar o Model de Category e User no controller, é necessário passar todos os usuários e todas as categorias para que o usuário possa escolher quem é o Autor do Post e quais Categorias o post pertence. O post vazio é um truque que usamos para poder reaproveitar o formulário de criar o post na hora de editar.
@@ -350,7 +350,7 @@ Nessa view, vamos ter um formulário que ira receber os dados do post, precisamo
         $post = Post::create($this->validateRequest());
         $post->categories()->sync(request()->request->get('categories'));
 
-        return redirect('posts');
+        return redirect('admin.post.list');
     }
 ```
 Na primeira linha, validamos se o título é único, caso contrário o usuário receberá a mensagem _'Já existe um post com esse título'_. Caso o título não exista no banco de dados, vamos tentar criar o Post usando a função **Post::create()**
@@ -378,14 +378,24 @@ Como parametro, vamos passar os dados que recebemos da request do usuário **$th
 Com essa função, além de definirmos todas as regras necessárias para publicar um post, garantimos que somente esses dados irão ser cadastrados no banco, caso o usuário edite o HTML e adicione um novo input com um novo campo, este dado será ignorado pela função.
 Feito isto, o terceiro comando da nossa função **store** pega as categorias selecionadas pelo usuário na hora de criar o post e usa o método **sync** para atualizar as relações de post com categoria no banco de dados.
 
-Agora vamos criar a função para editar o Post
+Agora vamos criar a função para retornar a view de editar o Post
+```php
+    public function edit(Post $post)
+    {
+        $users = User::all();
+        $categories = Category::all();
+
+        return view('posts.edit', compact('post', 'users', 'categories'));
+    }
+```
+E a função de atualizar o post no banco
 ```php
     public function update(Request $request, Post $post)
     {
         $post->update($this->validateRequest($request));
         $post->categories()->sync($request->request->get('categories'));
         
-        return redirect('admin');
+        return redirect('admin.posts.list');
     }
 ```
 
@@ -395,7 +405,7 @@ Para deletar o post é simples, basta receber ele por parametro e usar o método
     {
         $post->delete();
 
-        return redirect('posts');
+        return redirect('admin.posts.list');
     }
 ```
 
