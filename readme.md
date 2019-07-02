@@ -321,6 +321,36 @@ php artisan migrate:fresh
 ## Views no laravel
 Vamos modificar a página inicial do blog. As views no laravel ficam em **blog/resources/views/**
 
+
 ## Controllers no laravel
 Os controllers ficam em **blog/app/Http/Controllers**, já temos alguns criados se você seguiu o tutorial.
 
+Vamos criar um novo controller para os Posts
+```php
+php artisan make:controller PostsController -m Post
+```
+
+## Acessando as views
+Para ver suas views, você precisa dizer ao laravel como chegar nelas, isto é feito no arquivo **web.php** localizado em **blog/routes/web.php**
+
+Vamos criar uma rota para entender como funciona. Adicione o seguinte trecho de código ao arquivo web.php
+```php
+Route::get('/novarota', function(){
+    return 'Nova rota!';
+});
+```
+E agora acesse localhost/novarota e veja o que aparece.
+
+Para retornar uma view já existente, em vez de retornar uma String, vamos retornar uma view. Veja o exemplo
+```php
+Route::get('/admin', function (){
+    return view('admin.home');
+});
+```
+Quando retornar uma view, o laravel procura ela dentro da pasta **resources/views**, se a nossa view estiver dentro de uma pasta, dizemos primeiro o nome da pasta (admin) ponto o nome do arquivo, no caso do exemplo ele ira renderizar o arquivo **home.blade.php** que está em **resources/views/admin/home.blade.php**
+
+Porém como estamos retornando nossas views no controller, a forma que iremos fazer isso no web.php será assim:
+```php
+Route::get(('/admin', 'AdminController@index');
+```
+Nesse caso, quando o usuário acessar http://localhost/admin, o laravel ira acessar o controller **AdminController** e usar a função **index**.
