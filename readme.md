@@ -64,10 +64,10 @@ Caso esteja usando o [PHPStorm](https://www.jetbrains.com/phpstorm/), o atalho p
 
 Agora vamos criar a primeira tabela do banco de dados, a tabela Post. Rode o seguinte comando:
 ```php
-php artisan make:model Post -rm
+php artisan make:model Post -m
 ```
 Com este comando vai ser criado o Modelo Post, a migration para criar a tabela Post e um controlador, vamos ver o que significa cada um destes itens ao longo do tutorial.
-Para entender o comando você pode rodar "php artisan make:model -help", irá aparecer uma lista de opções que você pode utilizar junto com o comando, neste caso utilizamos -r para criar o controlador com a estrutura de Resource, e -m para criar o migration do modelo Post.
+Para entender o comando você pode rodar "php artisan make:model -help", irá aparecer uma lista de opções que você pode utilizar junto com o comando, neste caso utilizamos -m para criar o migration do modelo Post.
 
 Acesse o arquivo da migration post, ele está em **blog/database/migrations/ 0000_00_00_0000_create_posts_table.php**
 Agora vamos adicionar os elementos que um post tem, seu código deverá ficar parecido com isto:
@@ -105,7 +105,11 @@ class CreatePostsTable extends Migration
     }
 }
 ```
-Se você analisou o código, viu que foi criado uma relação entre Posts e Usuários pela chave estrangeira "user_id". Vamos definir isso nos nossos modelos "Post" e "Usuário"
+Vamos linkar os nossos Models com as tabelas criadas, acesse o modelo **Post** e adicione a variavel $table
+```php
+    protected $table = 'posts';
+```
+Se você analisou o código do migrate de posts, viu que foi criado uma relação entre Posts e Usuários pela chave estrangeira "user_id". Vamos definir isso nos nossos modelos "Post" e "Usuário"
 
 Adicione o seguinte trecho de código no modelo Post, ele está localizado em **blog/app/Post.php**
 
@@ -117,10 +121,14 @@ Adicione o seguinte trecho de código no modelo Post, ele está localizado em **
 
 E o seguinte trecho de código no modelo User, localizado em **blog/app/User.php**
 ```php 
+    protected $table = 'users';
+    
     public function posts(){
         return $this->hasMany(Post::class);
     }
 ```
+
+
 Para entender melhor o que significa "belongsTo, hasMany, belongsToMany", leia sobre [Eloquent Relationships](https://laravel.com/docs/5.8/eloquent-relationships)
 
 Agora vamos criar o migration dos comentários, rode o comando
