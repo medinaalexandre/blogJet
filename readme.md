@@ -325,7 +325,17 @@ Vamos modificar a página inicial do blog. As views no laravel ficam em **blog/r
 ## Controllers no laravel
 Os controllers ficam em **blog/app/Http/Controllers**, já temos alguns criados se você seguiu o tutorial.
 
-Vamos criar um novo controller para os Posts
+Para entender melhor como funciona os controllers, veja essa sequência de quatro vídeos, ao fim das quatro vídeo aulas você vai entender como funciona o  CRUD em laravel e a usar a ferramenta Resource do laravel.
+
+[Vídeo 1](https://www.youtube.com/watch?v=LhzCdEeEeQA&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=15)
+
+[Vídeo 2](https://www.youtube.com/watch?v=LhzCdEeEeQA&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=16)
+
+[Vídeo 3](https://www.youtube.com/watch?v=LhzCdEeEeQA&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=17)
+
+[Vídeo 4](https://www.youtube.com/watch?v=LhzCdEeEeQA&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=18)
+
+Agora vamos criar um novo controller para os Posts
 ```php
 php artisan make:controller PostsController -m Post
 ```
