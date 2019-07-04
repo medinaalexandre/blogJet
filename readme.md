@@ -307,6 +307,28 @@ E no modelo **User.php**
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
+    
+    public function checkRoles($roles)
+    {
+        if ( ! is_array($roles)) {
+            $roles = [$roles];
+        }
+
+        if ( ! $this->hasAnyRole($roles)) {
+            auth()->logout();
+            abort(404);
+        }
+    }
+
+    public function hasAnyRole($roles): bool
+    {
+        return (bool) $this->roles()->whereIn('name', $roles)->first();
+    }
+
+    public function hasRole($role): bool
+    {
+        return (bool) $this->roles()->where('name', $role)->first();
+    }
 ```
 
 Ainda falta criar os likes e a tabela de autenticação com o Google, mas vamos deixar isso para depois.
@@ -714,6 +736,19 @@ Altere o model **LikeComment** e adicione o seguinte trecho de código
 No model **Comment** adicione
 ```php
     public function likes(){
+        return $this->hasMany(LikeComment::class);
+    }
+```
+
+No model **User** adicione
+```php
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likesComments()
+    {
         return $this->hasMany(LikeComment::class);
     }
 ```
