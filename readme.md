@@ -317,324 +317,46 @@ php artisan migrate:fresh
 ```
 
 ## Views no laravel
-Vamos modificar a página inicial do blog. As views no laravel ficam em **blog/resources/views/** Agora vamos criar os templates, as views para nosso admin. Vamos utilizar o layout do propio laravel.
-
-
-Em **blog/resources/views/** vamos criar os seguintes arquivos nesse diretorio. Crindo a pasta **admin**, onde ficara todas views de nossa area administrativa.
-
+Agora vamos começar a escrever as nossas views, para isso, vamos ter os seguintes arquivos dentro das seguintes pastas
+```
+views    
     admin
-        categories 
-            create,
-            list, 
-            edit, 
-            form.blade.php
-        comments 
-            create, 
-            list, 
-            edit, 
-            form.blade.php
-        posts 
-            create, 
-            list, 
-            edit, 
-            form.blade.php
-        index.blade.php 
-
-Em  **blog/resources/views/admin** no index.blade.php cole esse codigo:
-
-```html
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    Bem-vindo {{ Auth::user()->name }}!
-                </div>
-            </div><br>
-        </div>
-    </div>
-</div>
-@endsection
+        categories.blade.php
+        dashboard.blade.php
+        floatingbutton.blade.php
+        posts.blade.php
+        users.blade.php
+    auth
+        passwords
+            email.blade.php
+            reset.blade.php
+        login.blade.php
+        register.blade.php
+        verify.blade.php
+    categories
+        show.blade.php
+        singlecategory.blade.php
+    layouts
+        app.blade.php
+        sidebar.blade.php
+    posts
+        create.blade.php
+        edit.blade.php
+        form.blade.php
+        search.blade.php
+        show.blade.php
+    users
+        create.blade.php
+        edit.blade.php
+        form.blade.php
+        show.blade.php
+        singleuser.blade.php
+    home.blade.php
+    singlepost.blade.php
+    summernote.blade.php   
 ```
-Agora já pode excluir home.blade.php
+Os códigos HTML são um pouco extensos, para não poluir o tutorial vou deixar o link da pasta views [aqui.](https://github.com/medinaalexandre/blogJet/tree/master/resources/views)
 
-Agora em **App\Http\Controllers** vamos renomear nosso controller **HomeController** para **AdminController**, e nele vamos alterar o retorno do metodo **index** para -> **return view('admin.index');**
-
-Apos o Login tesmos que sermos redirecionados para nosso **admin** Então em **App\Http\Controllers\Controller\Auth** temos alterar o redirecionamento para nossa area administrativa, alterando **protected $redirectTo = '/home'** para 
-**protected $redirectTo = '/admin'**
-
-Agora vamos modificar o app.blade.php em **resources/views/layouts** que sera nosso layout base. Cole esse codigo.
-
-```html
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-</head>
-
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ route('admin.index') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('list.post') }}">Posts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('list.category') }}">Categorias</a>
-                            </li>
-                        </ul>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="py-4 container">
-            @yield('content')
-        </main>
-    </div>
-</body>
-</html>
-```
-
-Com o admin configurado agora vamos criar as views para nossos Posts em **resources/views/layouts**.
-
-admin/create.blade.php
-```html
-@extends('layouts.app') @section('title', 'Novo Post') @section('content')
-<form action="/post/create/" method="POST" enctype="multipart/form-data">
-    @include('posts.form')
-    <div class="form-group">
-        <button id="submitForm" class="btn btn-primary mt-3" type="submit">Salvar</button>
-    </div>
-</form>
-@endsection
-```
-
-form.blade.php
-
-```html
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Titulo:</label>
-            <input type="text" name="title" value="{{ old('title') ?? $post->title }}" class="form-control">
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Descrição:</label>
-            <textarea class="form-control" name="description" id="" cols="20"
-                rows="10">{{ old('description') ?? $post->description }}</textarea>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Descrição:</label>
-            <textarea class="form-control" name="post_body" id="" cols="20"
-                rows="10">{{ old('post_body') ?? $post->post_body }}</textarea>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Categorias:</label>
-            <select name="categories_id[]" multiple>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
-            <a href="/categories">+</a>
-            
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Imagem</label>
-            <input type="file" name="image" id="img" src="{{ asset('$post->image')}}" class="form-control-file">
-        </div>
-    </div>
-</div>
-@csrf
-
-```
-
-edit.blade.php
-
-```html
-@extends('layouts.app') @section('title', 'Editar Post') @section('content')
-<form action="/posts/{{$post->id}}/edit" method="POST">
-    @include('posts.form')
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Usuario:</label>
-                <input class="form-control" readonly name="body" value="{{ old('name') ?? $post->user->name }}"
-                    rows="3">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Criado em:</label>
-                <input class="form-control" readonly name="body" value="{{ old('created_at') ?? $post->created_at }}"
-                    rows="3">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Editado em:</label>
-                <input class="form-control" readonly name="body" value="{{ old('updated_at') ?? $post->updated_at }}"
-                    rows="3">
-            </div>
-        </div>
-    </div>
-    @method('PATCH')
-    <div class="form-group">
-        <a class="btn btn-primary" href="/posts">Voltar</a>
-        <button class="btn btn-success" type="submit">Salvar</button>
-    </div>
-</form>
-@endsection
-
-```
-
-list.blade.php
-
-```html
-@extends('layouts.app') @section('title', 'Posts') @section('content')
-<div class="row">
-    <div class="col-12">
-        <h3>Lista de Postagens
-            <a style="margin-left:20px;" href="/posts/create">Novo</a>
-        </h3><hr>
-    </div>
-</div>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Slug</th>
-            <th>Descrição</th>
-            <th>Categoria(s)</th>
-            <th>Usuario</th>
-            <th>Criado em</th>
-            <th>Ação</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($posts as $post)
-            <tr>
-                <td>{{ $post->id }}</td>
-                <td>
-                    <a href="{{ route('blog.detail.post', $post->id) }}">
-                        {{ str_limit($post->title, $limit = 20, $end = '...') }}
-                    </a>
-                </td>
-                <td>{{ $post->slug }}</td>
-                <td>{{ str_limit($post->description, $limit = 15, $end = '...') }}</td>
-                <td>
-                    @foreach($post->categories as $category)
-                        {{ $category->name }}
-                    @endforeach
-                </td>
-                <td>{{ $post->user->name }}</td>
-                <td>{{ $post->created_at }}</td>
-                <td>
-                    <a class="btn btn-primary" href="/posts/{{$post->id}}/edit">Editar</a>
-                    <a class="btn btn-danger" href="/posts/{{$post->id}}">Excluir</a>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-{{ $posts->links()}}
-@endsection
-```
 
 ## Controllers no laravel
 Os controllers ficam em **blog/app/Http/Controllers**, já temos alguns criados se você seguiu o tutorial.
@@ -653,6 +375,16 @@ Agora vamos criar um novo controller para os Posts
 ```php
 php artisan make:controller PostsController -m Post
 ```
+Na função index, passe todos os posts usando Post:all() e passando para uma variavel, que vai ser passada para o template utilizando a função compact()
+```php
+    public function index()
+    {
+        $posts = Post::all();
+
+        return view ('admin.posts', compact('posts'));
+    }
+```
+
 Modifique a função create para retornar a view que cria um post
 ```php
         public function create()
@@ -661,7 +393,7 @@ Modifique a função create para retornar a view que cria um post
             $post = new Post();
             $categories = Category::all();
     
-            return view('admin.posts.create',compact('users', 'post', 'categories'));
+            return view('posts.create',compact('users', 'post', 'categories'));
         }
 ```
 Não esqueça de importar o Model de Category e User no controller, é necessário passar todos os usuários e todas as categorias para que o usuário possa escolher quem é o Autor do Post e quais Categorias o post pertence. O post vazio é um truque que usamos para poder reaproveitar o formulário de criar o post na hora de editar.
@@ -678,7 +410,7 @@ Nessa view, vamos ter um formulário que ira receber os dados do post, precisamo
             $post->save();
         }
 
-        return redirect('admin.post.list');
+        return redirect('posts');
     }
 ```
 Na primeira linha, validamos se o título é único, caso contrário o usuário receberá a mensagem _'Já existe um post com esse título'_. Caso o título não exista no banco de dados, vamos tentar criar o Post usando a função **Post::create()**
@@ -723,7 +455,7 @@ E a função de atualizar o post no banco
         $post->update($this->validateRequest($request));
         $post->categories()->sync($request->request->get('categories'));
         
-        return redirect('admin.posts.list');
+        return redirect('posts');
     }
 ```
 
@@ -733,10 +465,13 @@ Para deletar o post é simples, basta receber ele por parametro e usar o método
     {
         $post->delete();
 
-        return redirect('admin.posts.list');
+        return redirect('posts');
     }
 ```
-
+Pronto, agora já temos o nosso primeiro controller funcionando. Você pode verificar como fica os outros controllers [aqui](https://github.com/medinaalexandre/blogJet/tree/master/app/Http/Controllers), e para criar-los basta repetir o mesmo comando
+```php
+php artisan make:controller NomeDoController -m NomeDoModel
+```
 ## Acessando as views
 Para ver suas views, você precisa dizer ao laravel como chegar nelas, isto é feito no arquivo **web.php** localizado em **blog/routes/web.php**
 
@@ -750,17 +485,46 @@ E agora acesse localhost/novarota e veja o que aparece.
 
 Para retornar uma view já existente, em vez de retornar uma String, vamos retornar uma view. Veja o exemplo
 ```php
-Route::get('/admin', function (){
-    return view('admin.index');
+Route::get('/posts', function (){
+    return view('admin.posts');
 });
 ```
 Quando retornar uma view, o laravel procura ela dentro da pasta **resources/views**, se a nossa view estiver dentro de uma pasta, dizemos primeiro o nome da pasta (admin) ponto o nome do arquivo, no caso do exemplo ele ira renderizar o arquivo **home.blade.php** que está em **resources/views/admin/home.blade.php**
 
 Porém como estamos retornando nossas views no controller, a forma que iremos fazer isso no web.php será assim:
 ```php
-Route::get(('/admin', 'AdminController@index');
+Route::get('/admin', 'AdminController@index');
 ```
 Nesse caso, quando o usuário acessar http://localhost/admin, o laravel ira acessar o controller **AdminController** e usar a função **index**.
+
+
+Atualize seu arquivo **web.php** e adicione as seguintes rotas
+```php
+// Users routes
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('user/{user}', 'UsersController@singleUser');
+Route::get('post/{slug}', 'PostsController@singlePost');
+Route::post('search', 'PostsController@search');
+
+// Admin routes
+Route::get('/admin/', 'AdminController@index')->middleware('admin.check');
+Route::resource('posts', 'PostsController')->middleware('admin.check');
+Route::resource('users', 'UsersController')->middleware('admin.check');
+Route::resource('categories', 'CategoriesController')->middleware('admin.check');
+Route::post('/comments/create', 'PostsController@storeComment')->name('sendComment');
+
+//Categories menu
+Route::get('categories/{category}', 'CategoriesController@singleCategory');
+
+// Like routes
+Route::post('likePost', 'LikeController@store');
+Route::post('likeComment', 'LikeController@storeLikeComment');
+
+// google login
+Route::get('auth/{provider}', 'Auth\LoginController@redirectToProvider');
+Route::get('auth/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+```
 
 ## Como fazer o upload de imagens no Laravel
 Para fazer o upload de imagens, vamo usar o Sistema de armazenamento de arquivos do Laravel, a documentação dele você pode ver [aqui](https://laravel.com/docs/5.8/filesystem).

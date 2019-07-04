@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Like;
 use App\Post;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -109,5 +111,14 @@ class UsersController extends Controller
         $posts = Post::where('user_id', $user->id)->paginate(5);
 
         return view('users.singleuser', compact('user', 'posts'));
+    }
+
+    public function myLikes(User $user){
+
+        $likes = Like::where('user_id', $user->id)->paginate(5);
+        if($user->id == Auth::user()->id)
+            return view('users.myLikes', compact('likes'));
+        else
+            return redirect('home');
     }
 }

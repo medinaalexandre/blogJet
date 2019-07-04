@@ -11485,7 +11485,7 @@ h4 a:hover {
   margin-top: 20px;
 }
 
-#likeButton {
+.likeButton {
   color: #1f6fb2;
   background: none;
   border: none;

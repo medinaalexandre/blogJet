@@ -1,42 +1,66 @@
-require('./bootstrap');
+//require('./bootstrap');
 
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Homepage from './components/Homepage'
-import Create   from './components/Create'
-import Read     from './components/Read'
-import Update   from './components/Update'
-import Comments from './components/Comments'
+<script type="text/javascript">
+    // like post
+    $(function(){
+        $('.likePost').submit(function(e){
+            e.preventDefault();
+            var route = '/likePost';
+            var form_data = $(this);
 
+            $.ajax({
+                type: 'POST',
+                url: route,
+                data: form_data.serialize(),
+                success: function(){
+                    troca();
+                },
+            });
 
-Vue.use(VueRouter)
+            function troca(){
+                let icon = e.target.getElementsByName('likesIconPost');
+                let nr = e.target.getElementsByClassName('likesCountPost');
+                if(icon[0].classList.contains('far')){
+                    nr[0].innerHTML++;
+                    icon[0].classList.remove('far');
+                    icon[0].classList.add('fas');
+                }else{
+                    nr[0].innerHTML--;
+                    icon[0].classList.add('far');
+                    icon[0].classList.remove('fas');
+                }
+            }
 
-const router = new VueRouter({
-    mode: 'history',
-    routes: [
-        {
-            path: '/admin/dashboard',
-            name: 'read',
-            component: Read,
-            props: true
-        },
-        {
-            path: '/admin/create',
-            name: 'create',
-            component: Create,
-            props: true
-        },
-        {
-            path: '/admin/update',
-            name: 'update',
-            component: Update,
-            props: true
-        },
-    ],
+        });
+    });
+
+$(function(){
+    $('.likeComment').submit(function(e){
+        e.preventDefault();
+        var route = '/likeComment';
+        var form_data = $(this);
+
+        $.ajax({
+            type: 'POST',
+            url: route,
+            data: form_data.serialize(),
+            success: function(){
+                troca();
+            },
+        });
+        function troca(){
+            let icon = e.target.getElementsByClassName('likesIcon');
+            let nr = e.target.getElementsByClassName('likesCount');
+            if(icon[0].classList.contains('far')){
+                nr[0].innerHTML++;
+                icon[0].classList.remove('far');
+                icon[0].classList.add('fas');
+            }else{
+                nr[0].innerHTML--;
+                icon[0].classList.add('far');
+                icon[0].classList.remove('fas');
+            }
+        }
+    });
 });
-
-const app = new Vue({
-    el: '#app',
-    router,
-    components: { Homepage },
-});
+</script>

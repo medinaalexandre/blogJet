@@ -20,37 +20,42 @@
                                       @endforeach </h4>
 
                 @guest
-                    <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $post->likes()->count() }}
+                    <h4>Curtidas deste post:</h4><button type="submit" class="likeButton"> <i class="far fa-thumbs-up"></i></button> {{ $post->likes()->count() }}
                 @else
-                    <form action="/likePost" method="POST" id="likePost">
+                    <form action="/likePost" method="POST" class="likePost">
                         @csrf
                         <input type="hidden" name="post_id" value="{{$post->id}}">
                         <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                        <h4>Curtidas deste post:</h4><button type="submit" id="likeButton"> {!! $post->isAuthUserLikedPost() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!} {{ $post->likes()->count() }}</button>
+                        <h4>Curtidas deste post:</h4><button type="submit" class="likeButton"><div class="justify-content-start">{!! $post->isAuthUserLikedPost() ? '<i class="likesIconPost fas fa-thumbs-up"></i>' : '<i class="likesIconPost far fa-thumbs-up"></i>' !!}
+                                                                                                                                <div class="likesCountPost"> {{ $post->likes()->count() }} </div> </div></button>
+
                     </form>
                 @endguest
 
 
                 <h3>Comentários</h3>
-                @foreach($post->comments as $c)
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Comentário de {{ $c->user->name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Postado em {{$c->created_at}}</h6>
-                            <p class="card-text">{{$c->comment}}</p>
-                            @guest
-                               <button type="submit" id="likeCommentButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
-                            @else
-                                <form action="/likeComment" method="POST" id="likeComment">
-                                    @csrf
-                                    <input type="hidden" name="comment_id" value="{{$c->id}}">
-                                    <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
-                                    <button type="submit" id="likeButton"> {!! $c->isAuthUserLikedComment() ? '<i class="fas fa-thumbs-up"></i>' : '<i class="far fa-thumbs-up"></i>' !!}{{ $c->likes()->count() }} </button>
-                                </form>
-                            @endguest
-                        </div>
+                    <div class="selectorAll">
+                    @foreach($post->comments as $c)
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Comentário de {{ $c->user->name }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Postado em {{$c->created_at}}</h6>
+                                    <p class="card-text">{{$c->comment}}</p>
+                                    @guest
+                                       <button type="submit" id="likeCommentButton"> <i class="far fa-thumbs-up"></i></button> {{ $c->likes()->count() }}
+                                    @else
+                                        <form action="/likeComment" method="POST" class="likeComment">
+                                            @csrf
+                                            <input type="hidden" name="comment_id" value="{{$c->id}}">
+                                            <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                                                <button type="submit" class="likeButton"><div class="justify-content-start">{!! $c->isAuthUserLikedComment() ? '<i class="likesIcon fas fa-thumbs-up"></i>' : '<i class="likesIcon far fa-thumbs-up"></i>' !!}
+                                                                                                                            <div class="likesCount"> {{ $c->likes()->count() }} </div> </div></button>
+                                        </form>
+                                    @endguest
+                                </div>
+                            </div>
+                    @endforeach
                     </div>
-                @endforeach
                 @guest
                     <br>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -100,11 +105,12 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
     <script type="text/javascript">
         // like post
         $(function(){
-            $('#likePost').submit(function(e){
+            $('.likePost').submit(function(e){
+                e.preventDefault();
                 var route = '/likePost';
                 var form_data = $(this);
 
@@ -113,16 +119,29 @@
                     url: route,
                     data: form_data.serialize(),
                     success: function(){
-                        location.reload();
+                        troca();
                     },
                 });
+                function troca(){
+                    let icon = e.target.getElementsByClassName('likesIconPost');
+                    let nr = e.target.getElementsByClassName('likesCountPost');
+                    if(icon[0].classList.contains('far')){
+                        nr[0].innerHTML++;
+                        icon[0].classList.remove('far');
+                        icon[0].classList.add('fas');
+                    }else{
+                        nr[0].innerHTML--;
+                        icon[0].classList.add('far');
+                        icon[0].classList.remove('fas');
+                    }
+                }
 
-                e.preventDefault();
             });
         });
 
         $(function(){
-            $('#likeComment').submit(function(e){
+            $('.likeComment').submit(function(e){
+                e.preventDefault();
                 var route = '/likeComment';
                 var form_data = $(this);
 
@@ -131,13 +150,23 @@
                     url: route,
                     data: form_data.serialize(),
                     success: function(){
-                        location.reload();
+                        troca();
                     },
                 });
-
-                e.preventDefault();
+                function troca(){
+                    let icon = e.target.getElementsByClassName('likesIcon');
+                    let nr = e.target.getElementsByClassName('likesCount');
+                    if(icon[0].classList.contains('far')){
+                        nr[0].innerHTML++;
+                        icon[0].classList.remove('far');
+                        icon[0].classList.add('fas');
+                    }else{
+                        nr[0].innerHTML--;
+                        icon[0].classList.add('far');
+                        icon[0].classList.remove('fas');
+                    }
+                }
             });
         });
-
     </script>
 @endsection

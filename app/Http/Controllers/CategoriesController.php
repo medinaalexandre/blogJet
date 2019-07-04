@@ -32,24 +32,8 @@ class CategoriesController extends Controller
         return view('categories.show', compact('category'));
     }
 
-    public function edit(Category $category)
-    {
-        //
-    }
-
-    public function update(Request $request, Category $category)
-    {
-        //
-    }
-
-    public function destroy(Category $category)
-    {
-        //
-    }
-
     public function singleCategory($slug){
         $category = Category::where(['name' => $slug])->firstOrFail();
-
 
         return view('categories.singlecategory', compact('category'));
     }
