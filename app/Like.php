@@ -8,6 +8,8 @@ class Like extends Model
 {
     protected $guarded = [];
 
+    protected $table = 'likes';
+
     public function post(){
         return $this->belongsTo(Post::class);
     }

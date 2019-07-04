@@ -8,6 +8,8 @@ class LikeComment extends Model
 {
     protected $guarded = [];
 
+    protected $table = 'like_comments';
+
     public function comment(){
         return $this->belongsTo(Comment::class);
     }

@@ -472,6 +472,74 @@ Pronto, agora já temos o nosso primeiro controller funcionando. Você pode veri
 ```php
 php artisan make:controller NomeDoController -m NomeDoModel
 ```
+
+## Middlewares no Laravel
+
+Vamos criar um middleware para proteger as rotas do admin. Execute no terminal o seguinte comando.
+
+``` sh
+$ php artisan make:middleware AdminCheck
+```
+
+Deixe o seu middleware assim:
+
+```php
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+
+class AdminCheck
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+
+    public function handle($request, Closure $next)
+    {
+
+        if(request()->user()->hasRole('admin'))
+            return $next($request);
+
+        return redirect('home');
+    }
+}
+
+```
+
+Com o middleware criado agora vamos registralo em **app/Http/Kernel.php** em **$routeMiddleware** adicinando a seguinte linha de codigo.
+
+```php
+'admin.check' =>  \App\Http\Middleware\AdminCheck::class,
+```
+
+Com o middleware registrado agora podemos proteger nossas rotas em **routes/web.php**, usando da seguinte maneira.
+
+Exemplo:
+```php
+Route::METHOD('/suarota/', 'SeuController@method')->middleware('admin.check');
+```
+
+Em **resources/views/singlepost.blade.php** existe uma verificação com os próprios recursos do blade do Laravel. 
+
+Exemplo da documentação do Laravel https://laravel.com/docs/5.8/blade:
+
+```blade
+@auth('admin')
+    // O usuario está autenticado!
+@endauth
+
+@guest('admin')
+    // O usuario NÂO está autenticado!
+@endguest
+```
+
 ## Acessando as views
 Para ver suas views, você precisa dizer ao laravel como chegar nelas, isto é feito no arquivo **web.php** localizado em **blog/routes/web.php**
 
@@ -566,10 +634,222 @@ Vamos adicionar essa função nova **storeImage()** a nossa função de Criar um
 
     }
 ```
-## Middlewares no Laravel
-
 
 ## Likes nos posts e nos comentários
+Vamos criar os likes dos posts e comentários agora, começando pelo like dos posts
 
+```php
+php artisan make:model Like -m
+```
+
+no migrate do like **create_likes_table**, altere a função **up()** para
+```php
+    Schema::create('likes', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->unsignedBigInteger('post_id')->index();
+        $table->foreign('post_id')->references('id')->on('posts')->onDelete("cascade");
+        $table->unsignedBigInteger('user_id')->index();
+        $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
+    });
+```
+
+No model do **Post** adicione a função
+```php
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
+```
+
+e no model **Like** adicione a função
+```php
+    protected $table = 'likes';
+
+    public function post(){
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+```
+
+Agora o like dos comentários
+
+```php
+ php artisan make:model LikeComment -m
+ ```
+
+Altere a função up() do migrate **create_like_comments**
+```php
+    Schema::create('like_comments', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+
+        $table->unsignedBigInteger('comment_id');
+        $table->foreign('comment_id')->references('id')->on('comments')->onDelete("cascade");
+
+        $table->unsignedBigInteger('user_id')->index();
+        $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
+    }); 
+```
+
+Altere o model **LikeComment** e adicione o seguinte trecho de código
+```php
+    protected $table = 'like_comments';
+
+    public function comment(){
+        return $this->belongsTo(Comment::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+```
+No model **Comment** adicione
+```php
+    public function likes(){
+        return $this->hasMany(LikeComment::class);
+    }
+```
+
+Nas views para checar se o usuário já deu like no no comentário, utilizamos a função isAuthUserLikedComment(), essa função retorna true ou false dependendo se o usuário deu like ou não no Comentário.
+Adicione ela ao model **Comment**
+```php
+    public function isAuthUserLikedComment(){
+        $like = $this->likes()->where('user_id', Auth::user()->id)->get();
+        if($like->isEmpty()){
+            return false;
+        }
+        return true;
+    }
+```
+
+Para ver se o usuário deu like no post, segue a mesma lógica do comentário, então vamos adicionar a função _isAuthUserLikedPost_ ao model **Post**
+```php
+    public function isAuthUserLikedPost(){
+        $like = $this->likes()->where('user_id', Auth::user()->id)->get();
+        if($like->isEmpty()){
+            return false;
+        }
+        return true;
+    }
+```
+Agora as rotas de like e as views que contem os mesmos irão funcionar.
 
 ## Como fazer o login com google
+Para fazer o login com o google, utilizaremos o [Socialite](https://github.com/laravel/socialite/tree/2.0).
+O vídeo que segui para implementar o Socialite no blog foi esse [aqui](https://www.youtube.com/watch?v=w3Pn9jAt0o4).
+Para entender melhor como funciona li esse tutorial [aqui.](https://laraveldaily.com/from-google-api-to-google-sign-in-with-laravel-socialite/)
+
+Seguindo a documentação do Socialite, para adicionalo precisamos utilizar o composer para baixar as dependencias do Socialite
+```php
+composer require laravel/socialite
+```
+
+Registrar o Socialite no nosso arquivo de configuração **cofig/app.php**
+```php
+'providers' => [
+    // Other service providers...
+
+    Laravel\Socialite\SocialiteServiceProvider::class,
+],
+```
+_Cuidado que 'providers' já existe, apenas adicione o socialite dentro do vetor, sem retirar o resto_
+
+Adicionar o Socialite facade aos nossos aliases, também dentro do arquivo **config/app.php**
+
+Adicione dentro do vetor 'aliases'
+
+`` 'Socialite' => Laravel\Socialite\Facades\Socialite::class, ``
+
+Precisamos adicionar as credenciais do serviço de autenticação do google na classe de serviços do nosso blog, vá em **config/services.php** e adicione
+```
+    'google' => [
+            'client_id'     => env('GOOGLE_CLIENT_ID'),
+            'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+            'redirect'      => env('GOOGLE_REDIRECT'),
+    ],
+```
+
+Agora precisamos cadastrar essas 3 novas variaveis que criamos no nosso arquivo **.env**, adicione no final do arquivo
+```dotenv
+GOOGLE_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+GOOGLE_REDIRECT=http://localhost:8000/auth/google/callback
+```
+O Gooogle Client ID, Google Client Secret e Google Redirec você precisa criar da sua API google.
+Acesse [console.developers.google.com](http://console.developers.google.com) e crie uma API **Google+ API**, você irá obter esses 3 dados, depois é apenas substituir.
+
+
+
+
+Vá no controller **LoginController** e adicione as funções
+
+```php
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+
+
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($provider)->stateless()->user();
+
+        $authUser = $this->FindOrCreateUser($user, $provider);
+        Auth::login($authUser, true);
+
+        return redirect('home');
+    }
+
+    public function findOrCreateUser($user, $provider)
+    {
+        $authUser = User::where('email', $user->email)->first();
+        if($authUser){
+            return $authUser;
+        }
+
+        $newUser                    = new User;
+        $newUser->provider_name     = $provider;
+        $newUser->provider_id       = $user->getId();
+        $newUser->name              = $user->getName();
+        $newUser->email             = $user->getEmail();
+        $newUser->email_verified_at = now();
+        $newUser->avatar            = $user->getAvatar();
+        $newUser->save();
+
+        return $newUser;
+    }
+```
+
+Vamos modificar a tabela de Users para receber os dados de login com o google, para isso crie um novo migrate
+
+
+``php artisan make:migration add_socialite_fields_to_users_table``
+
+Altere a função up do novo migrate para o seguinte código
+```php
+public function up()
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->string('provider_name')->nullable()->after('id');
+        $table->string('provider_id')->nullable()->after('provider_name');
+        $table->string('password')->nullable()->change();
+        $table->string('avatar')->nullable();
+    });
+}
+```
+
+Para usar o metodo **->change()**, precisamos instalar um pacote adicional
+
+``composer require doctrine/dbal``
+
+Adicione o seguinte trecho de código no arquivo **config/auth.php**
+```php
+'socialite' => [
+    'drivers' => [
+        'google',
+    ],
+ ],
+```
