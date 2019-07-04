@@ -566,3 +566,10 @@ Vamos adicionar essa função nova **storeImage()** a nossa função de Criar um
 
     }
 ```
+## Middlewares no Laravel
+
+
+## Likes nos posts e nos comentários
+
+
+## Como fazer o login com google
