@@ -371,6 +371,8 @@ Para entender melhor como funciona os controllers, veja essa sequência de quatr
 
 [Vídeo 4](https://www.youtube.com/watch?v=LhzCdEeEeQA&list=PLpzy7FIRqpGD0kxI48v8QEVVZd744Phi4&index=18)
 
+Se possível, veja esta playlist inteira sobre o laravel, foi muito útil na hora de criar o blog. 
+
 Agora vamos criar um novo controller para os Posts
 ```php
 php artisan make:controller PostsController -m Post
