@@ -6,11 +6,11 @@ Para criar o blog iremos utilizar o Laravel 5.8, para utilizar ele é necessári
 
 ## Instalando o laravel
 Primeiro instale o laravel.
-```php
+```sh
 composer global require laravel/installer
 ```
 Quando o composer terminar de baixar as dependências do laravel, rode o seguinte comando para criar um novo projeto laravel
-```php
+```sh
 composer create-project --prefer-dist laravel/laravel blog
 ```
 Agora, acesse a pasta do seu projeto e coloque seu projeto online.
@@ -745,11 +745,11 @@ O vídeo que segui para implementar o Socialite no blog foi esse [aqui](https://
 Para entender melhor como funciona li esse tutorial [aqui.](https://laraveldaily.com/from-google-api-to-google-sign-in-with-laravel-socialite/)
 
 Seguindo a documentação do Socialite, para adicionalo precisamos utilizar o composer para baixar as dependencias do Socialite
-```php
+```sh
 composer require laravel/socialite
 ```
 
-Registrar o Socialite no nosso arquivo de configuração **cofig/app.php**
+Registrar o Socialite no nosso arquivo de configuração **config/app.php**
 ```php
 'providers' => [
     // Other service providers...
@@ -763,7 +763,9 @@ Adicionar o Socialite facade aos nossos aliases, também dentro do arquivo **con
 
 Adicione dentro do vetor 'aliases'
 
-`` 'Socialite' => Laravel\Socialite\Facades\Socialite::class, ``
+```php
+ 'Socialite' => Laravel\Socialite\Facades\Socialite::class, 
+```
 
 Precisamos adicionar as credenciais do serviço de autenticação do google na classe de serviços do nosso blog, vá em **config/services.php** e adicione
 ```
@@ -845,7 +847,9 @@ public function up()
 
 Para usar o metodo **->change()**, precisamos instalar um pacote adicional
 
-``composer require doctrine/dbal``
+```sh 
+composer require doctrine/dbal
+```
 
 Adicione o seguinte trecho de código no arquivo **config/auth.php**
 ```php
