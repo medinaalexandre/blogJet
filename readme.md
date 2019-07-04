@@ -570,12 +570,15 @@ Nesse caso, quando o usuário acessar http://localhost/admin, o laravel ira aces
 
 Atualize seu arquivo **web.php** e adicione as seguintes rotas
 ```php
+Auth::routes();
+
 // Users routes
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('user/{user}', 'UsersController@singleUser');
 Route::get('post/{slug}', 'PostsController@singlePost');
 Route::post('search', 'PostsController@search');
+Route::get('user/{user}/likes', 'UsersController@myLikes')->name('mylikes');
 
 // Admin routes
 Route::get('/admin/', 'AdminController@index')->middleware('admin.check');
@@ -826,6 +829,9 @@ Vá no controller **LoginController** e adicione as funções
         return $newUser;
     }
 ```
+_Não esqueça de importar o Socialite no controller no começo do arquivo_ 
+
+_use Laravel\Socialite\Facades\Socialite;_
 
 Vamos modificar a tabela de Users para receber os dados de login com o google, para isso crie um novo migrate
 
