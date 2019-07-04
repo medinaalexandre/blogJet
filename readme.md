@@ -106,8 +106,12 @@ class CreatePostsTable extends Migration
 }
 ```
 Vamos linkar os nossos Models com as tabelas criadas, acesse o modelo **Post** e adicione a variavel $table
+
+E definir a variavel guarded como um vetor vazio para permitir o usuário manipular qualquer atributo do modelo Post, para entender melhor sobre isso leia na documentação do laravel [aqui.](https://laravel.com/docs/5.8/eloquent)
 ```php
     protected $table = 'posts';
+    
+    protected $guarded = [];
 ```
 Se você analisou o código do migrate de posts, viu que foi criado uma relação entre Posts e Usuários pela chave estrangeira "user_id". Vamos definir isso nos nossos modelos "Post" e "Usuário"
 
@@ -172,7 +176,9 @@ Modifique o modelo **Post.php** e adicione o seguinte trecho de código
 ```
 No modelo **Comment.php** adicione
 ```php
-    protected $table = 'comments';        
+    protected $table = 'comments'; 
+    
+    protected $guarded = [];       
 
     public function post(){
         return $this->belongsTo(Post::class);
@@ -223,6 +229,8 @@ Modifique o modelo **Post.php** e adicione o seguinte trecho de código
 E no modelo **Category.php** adicione
 ```php
     protected $table = 'categories';
+    
+    protected $guarded = [];
      
     public function posts(){
         return $this->belongsToMany(Post::class);
@@ -378,6 +386,8 @@ views
     summernote.blade.php   
 ```
 Os códigos HTML são um pouco extensos, para não poluir o tutorial vou deixar o link da pasta views [aqui.](https://github.com/medinaalexandre/blogJet/tree/master/resources/views)
+
+Você vai precisar também dos arquivos estáticos, podem ser encontrados [aqui.](https://github.com/medinaalexandre/blogJet/tree/master/public) Baixe a pasta _css, img e js._
 
 
 ## Controllers no laravel
@@ -691,7 +701,9 @@ No model do **Post** adicione a função
 e no model **Like** adicione a função
 ```php
     protected $table = 'likes';
-
+    
+    protected $guarded = [];
+    
     public function post(){
         return $this->belongsTo(Post::class);
     }
@@ -899,4 +911,126 @@ Adicione o seguinte trecho de código no arquivo **config/auth.php**
         'google',
     ],
  ],
+```
+
+## Alimentando o blog
+
+Para alimentar o nosso blog podemos utilizar as Factorys do Laravel, veja a documentação https://laravel.com/docs/5.8/seeding 
+
+Vamos criar um seed para o nosso Usuario e Role
+
+```sh
+$ php artisan make:seeder UsersTableSeeder
+$ php artisan make:seeder RoleTableSeeder
+
+```
+ 
+```php
+<?php
+
+use Illuminate\Database\Seeder;
+use App\User;
+use App\Role;
+use Illuminate\Support\Facades\Hash;
+
+class UserTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $user = new User;
+        $user->name = 'Usuario normal';
+        $user->email = 'normal@gmail.com';
+        $user->password = Hash::make('normal');
+        $user->save();
+        $user->roles()->attach(Role::where('name', 'user')->first());
+
+        $admin = new User;
+        $admin->name = 'Teste Teste';
+        $admin->email = 'teste@gmail.com';
+        $admin->password = Hash::make('teste');
+        $admin->save();
+        $admin->roles()->attach(Role::where('name', 'admin')->first());
+    }
+}
+
+```
+
+```php
+
+<?php
+
+use Illuminate\Database\Seeder;
+use App\Role;
+
+class RoleTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $role_regular_user = new Role;
+        $role_regular_user->name = 'user';
+        $role_regular_user->deion = 'Usuário normal, pode ver posts e comentar';
+        $role_regular_user->save();
+
+        $role_admin_user = new Role;
+        $role_admin_user->name = 'admin';
+        $role_admin_user->deion = 'Usuário admin, com acesso total aos recursos';
+        $role_admin_user->save();
+    }
+}
+
+```
+
+Para funcionar vamos adicionar esses dois novos seeds na classe **DatabaseSeeder.php**
+
+```php
+<?php
+
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->call([
+            RoleTableSeeder::class,
+            UserTableSeeder::class,
+        ]);
+    }
+}
+
+```
+*Obs: A tabela RoleTableSeeder deve ser a primeira pois a tabela de usuarios usa ela na hora de das permissões ao usuario.
+
+
+```sh
+php artisan make:seeder RoleTableSeeder
+```
+
+## Tudo pronto
+Pronto, agora o seu blog está pronto para ser usado.
+
+Alguns erros que podem acontecer: Falta de import como por exemplo:
+```
+    Class 'App\Auth' not found (View: /home/jetimob/workspace/blog/resources/views/singlepost.blade.php)
+```
+![Classe faltando](https://i.imgur.com/KgAmtTp.png)
+
+Para resolver isso, va na classe que está faltando a classe e adicione ela. No exemplo da print va no Model **Post** e adicione 
+```php
+use Auth;
 ```
